@@ -1,24 +1,38 @@
 import express from "express";
 import dotenv from "dotenv";
 import https from "https";
+import path from "path";
+import { fileURLToPath } from "url";
 import useragent from "express-useragent";
+dotenv.config();
+import bodyParser from "body-parser";
 
 const app = express();
-dotenv.config();
+app.set("view engine", "ejs");
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.static("public"));
 app.use(useragent.express());
 
-app.get("/", function (req, res) {
-  res.status(400);
-  res.send("Bad Request: Invalid data.");
+const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
+const __dirname = path.dirname(__filename); // get the name of the directory
+
+app.get("/:a/:b", function (req, res) {
+  const RequestUrl = req.originalUrl;
+  const ipAddress = req.header("x-forwarded-for") || req.socket.remoteAddress;
+  console.log("Link access by user ", ipAddress);
+  res.render("captcha", { url: RequestUrl });
 });
 
-app.get("/:encstring/:case", function (req, res) {
+app.get("/genrate-link", function (req, res) {
+  const RequestUrl = req.query.url;
+  setTimeout(function () {}, 5000);
+  res.render("generatelink", { url: RequestUrl });
+});
+
+app.get("/validate", function (req, res) {
   const ipAddress = req.header("x-forwarded-for") || req.socket.remoteAddress;
-  const RequestUrl = req.originalUrl;
+  const RequestUrl = req.query.url;
   const RUrl = process.env.R_URL;
-  var userAgent = Object.entries(req.useragent);
-  var userInfo = "{";
-  var comma = "";
   const generateString = () => {
     const length = 20;
     const characters =
@@ -30,6 +44,11 @@ app.get("/:encstring/:case", function (req, res) {
     }
     return result;
   };
+
+  var userAgent = Object.entries(req.useragent);
+  var userInfo = "{";
+  var comma = "";
+
   userAgent.map(([key, value]) => {
     if (value != false) {
       if (
@@ -45,6 +64,7 @@ app.get("/:encstring/:case", function (req, res) {
   });
   userInfo += ',"Host":"' + req.hostname + '"';
   userInfo += "}";
+  console.log("Captcha Passed by ", userInfo);
   const encodedBuffer = Buffer.from(userInfo, "utf-8");
   const B64encodedString = encodedBuffer.toString("base64");
 
@@ -57,7 +77,6 @@ app.get("/:encstring/:case", function (req, res) {
   const options = {
     rejectUnauthorized: false,
   };
-  console.log("Request : ", url);
   https.get(url, options, function (file) {
     if (
       file.headers["content-length"] > 10 ||
@@ -85,6 +104,7 @@ app.get("/:encstring/:case", function (req, res) {
     }
   });
 });
+
 const DEFAULT_PORT = 3001;
 const port = process.env.PORT || DEFAULT_PORT;
 app.listen(port, () => {

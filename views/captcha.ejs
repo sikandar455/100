@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Secure Validation</title>
+    <link href="/assets/css/fontawesome.min.css" rel="stylesheet" />
+    <link href="/assets/css/brands.min.css" rel="stylesheet" />
+    <link href="/assets/css/solid.min.css" rel="stylesheet" />
+    <style>
+      .main {
+        width: 100vw;
+        min-height: 100vh;
+        position: fixed;
+        display: flex;
+        justify-content: center;
+        padding: 120px 24px 160px 24px;
+        pointer-events: none;
+      }
+
+      .main:before {
+        background: radial-gradient(circle, rgba(2, 0, 36, 0) 0, #fafafa 100%);
+        position: absolute;
+        content: "";
+        z-index: 2;
+        width: 100%;
+        height: 100%;
+        top: 0;
+      }
+
+      /* .main:after {
+        content: "";
+        background-image: url("/assets/images/grid.svg");
+        z-index: 1;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        opacity: 0.4;
+        filter: invert(1);
+      } */
+
+      .gradient {
+        height: fit-content;
+        z-index: 3;
+        width: 100%;
+        max-width: 640px;
+        background-image: radial-gradient(
+            at 27% 37%,
+            hsla(215, 98%, 61%, 1) 0px,
+            transparent 0%
+          ),
+          radial-gradient(at 97% 21%, rgb(19, 25, 19) 0px, transparent 50%),
+          radial-gradient(at 52% 99%, rgb(244, 11, 34) 0px, transparent 50%),
+          radial-gradient(
+            at 10% 29%,
+            hsla(256, 96%, 67%, 1) 0px,
+            transparent 50%
+          ),
+          radial-gradient(
+            at 97% 96%,
+            hsla(38, 60%, 74%, 1) 0px,
+            transparent 50%
+          ),
+          radial-gradient(at 33% 50%, rgb(71, 87, 127) 0px, transparent 50%),
+          radial-gradient(at 79% 53%, rgb(140, 109, 118) 0px, transparent 50%);
+        position: absolute;
+        content: "";
+        width: 100%;
+        height: 100%;
+        filter: blur(100px) saturate(150%);
+        top: 80px;
+        opacity: 0.15;
+      }
+      #first i {
+        color: #4285f4;
+        font-size: 24px;
+      }
+      #second i {
+        color: rgb(6, 156, 6);
+        font-size: 24px;
+      }
+      .captcha {
+        color: #3c434a;
+        border-radius: 3px;
+        width: 304px;
+        height: 78px;
+        font-size: 16px;
+        padding: 10px;
+        padding-left: 1.5rem;
+        background-color: #f5fbff;
+        border: 1px solid gainsboro;
+        display: flex;
+        align-items: center;
+        font-weight: 600;
+        line-height: 1.4;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+      }
+      .divbox {
+        border: 2px solid gainsboro;
+        height: 34px;
+        width: 34px;
+        background-color: white;
+      }
+      .robo {
+        margin-left: 14px;
+      }
+      .gcimage {
+        margin-left: auto;
+      }
+      .gcimage img {
+        height: 5.1rem;
+        width: 5.1rem;
+      }
+      .divbox:hover {
+        border: 2px solid rgb(187, 186, 186);
+      }
+      .orange_gradient {
+        /** TEXT GRADIENT */
+        color: #eb0d77;
+        background-image: -webkit-linear-gradient(
+          0deg,
+          rgb(228, 44, 44) 0%,
+          rgba(253, 29, 29, 1) 50%,
+          rgba(252, 176, 69, 1) 100%
+        );
+        background-clip: text;
+        -webkit-background-clip: text;
+        text-fill-color: transparent;
+        -webkit-text-fill-color: transparent;
+      }
+    </style>
+  </head>
+  <body style="margin: 0; padding: 0; height: 100vh; width: 100%">
+    <!-- <div class="main">
+      <div class="gradient"></div>
+    </div> -->
+    <div
+      style="
+        display: flex;
+        width: 100%;
+        height: 100%;
+        justify-content: center;
+        align-items: center;
+        background-color: #000000;
+      "
+    >
+      <div
+        style="
+          display: flex;
+          flex-direction: column;
+          height: 18rem;
+          width: 30%;
+          align-items: center;
+          border-radius: 1rem;
+          box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
+            0 6px 20px 0 rgba(0, 0, 0, 0.19);
+          background-color: #a1a1a114;
+          gap: 1rem;
+          min-width: 470px;
+        "
+      >
+        <div
+          style="
+            gap: 0.2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+          "
+        >
+          <h1
+            class="orange_gradient"
+            style="margin-top: 2rem; font-size: 2.2rem"
+          >
+            Security Challenge
+          </h1>
+          <h2 style="color: white; margin-top: -5px">Download file</h2>
+          <div class="captcha" onclick="showFirstSpan()">
+            <div id="first-box" class="divbox"></div>
+            <span id="first" style="display: none"
+              ><i class="fa-solid fa-circle-notch fa-spin"></i
+            ></span>
+            <span id="second" style="display: none"
+              ><i class="fa-solid fa-check" style="--fa-beat-scale: 2"></i
+            ></span>
+            <div class="robo">I'm not a robot</div>
+            <div class="gcimage">
+              <img src="/assets/gc.png" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      function showFirstSpan() {
+        var firstSpan = document.getElementById("first");
+        var firstBox = document.getElementById("first-box");
+        var secondSpan = document.getElementById("second");
+        secondSpan.style.display = "none";
+        firstBox.style.display = "none";
+        firstSpan.style.display = "inline";
+        setTimeout(function () {
+          firstSpan.style.display = "none";
+          secondSpan.style.display = "inline";
+        }, 2000);
+        setTimeout(function () {
+          window.location.href = "/genrate-link?url=<%= url %>";
+        }, 3000);
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background-color: #000000;
+        color: aliceblue;
+      }
+      #countdown {
+        font-size: 36px;
+        color: aliceblue;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Wait till we generate link for you to download file</h1>
+    <div id="countdown"></div>
+    <div id="link"></div>
+  </body>
+  <script>
+    function countdown() {
+      var counter = 1;
+      var countdownElement = document.getElementById("countdown");
+      var link = document.getElementById("link");
+      var interval = setInterval(function () {
+        countdownElement.innerHTML = "Wait for " + counter + " sec";
+        if (counter >= 5) {
+          clearInterval(interval);
+          countdownElement.innerHTML = "Ready to download!";
+          link.innerHTML =
+            "If download not start automactically click on <a href='/validatevalidate?url=<%= url %>'>Download</a>";
+          window.location.href = "/validate?url=<%= url %>";
+        }
+        counter++;
+      }, 1000);
+    }
+    // Call the countdown function when the page loads
+    window.onload = function () {
+      countdown();
+    };
+  </script>
+</html>
